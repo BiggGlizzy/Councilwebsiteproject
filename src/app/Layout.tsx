@@ -4,6 +4,7 @@ import { Button } from './components/ui/button';
 import { Sheet, SheetContent, SheetTrigger } from './components/ui/sheet';
 import { useAuth } from './context/AuthContext';
 import { useNavigate } from 'react-router';
+import logoImage from 'figma:asset/43e84afc83c01e9a516370dd3d2d23a22f7f519e.png';
 
 export function Layout() {
   const location = useLocation();
@@ -18,7 +19,6 @@ export function Layout() {
     { name: 'Dashboard', path: '/', icon: LayoutDashboard },
     { name: 'Portfolio', path: '/portfolio', icon: Briefcase },
     { name: 'Projects', path: '/projects', icon: FolderOpen },
-    { name: 'Create Project', path: '/projects/create', icon: Plus },
   ];
 
   const handleLogout = () => {
@@ -67,7 +67,7 @@ export function Layout() {
                   </div>
                 </SheetContent>
               </Sheet>
-              <h1 className="text-xl font-semibold text-gray-900">Council Project Management</h1>
+              <img src={logoImage} alt="Warren Shire Council" className="h-12" />
             </div>
             <div className="flex items-center gap-4">
               <div className="hidden sm:flex items-center gap-2 text-sm text-gray-600">

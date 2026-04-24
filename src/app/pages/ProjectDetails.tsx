@@ -1,9 +1,16 @@
 import { useParams, Link } from 'react-router';
+import { useState } from 'react';
 import { useProjects } from '../context/ProjectContext';
 import { Badge } from '../components/ui/badge';
 import { Button } from '../components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../components/ui/tabs';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogDescription } from '../components/ui/dialog';
+import { Input } from '../components/ui/input';
+import { Label } from '../components/ui/label';
+import { Textarea } from '../components/ui/textarea';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../components/ui/select';
+import { toast } from 'sonner';
 import { 
   ArrowLeft, 
   Calendar, 
@@ -14,13 +21,74 @@ import {
   AlertCircle,
   FileText,
   Target,
-  Milestone
+  Milestone,
+  Plus,
+  X
 } from 'lucide-react';
 
 export function ProjectDetails() {
   const { id } = useParams();
-  const { getProject } = useProjects();
+  const { getProject, addMilestone } = useProjects();
   const project = getProject(id || '');
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [formData, setFormData] = useState({
+    title: '',
+    description: '',
+    dueDate: '',
+    status: 'Not Started' as 'Not Started' | 'In Progress' | 'Completed' | 'Overdue',
+    grantAmount: '',
+    deliverable: '',
+  });
+  const [deliverables, setDeliverables] = useState<string[]>([]);
+
+  const handleInputChange = (field: string, value: string) => {
+    setFormData(prev => ({ ...prev, [field]: value }));
+  };
+
+  const addDeliverable = () => {
+    if (formData.deliverable.trim()) {
+      setDeliverables(prev => [...prev, formData.deliverable.trim()]);
+      setFormData(prev => ({ ...prev, deliverable: '' }));
+    }
+  };
+
+  const removeDeliverable = (index: number) => {
+    setDeliverables(prev => prev.filter((_, i) => i !== index));
+  };
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    if (!formData.title || !formData.description || !formData.dueDate || !formData.grantAmount) {
+      toast.error('Please fill in all required fields');
+      return;
+    }
+
+    const newMilestone = {
+      id: `gm-${Date.now()}`,
+      title: formData.title,
+      description: formData.description,
+      dueDate: formData.dueDate,
+      status: formData.status,
+      grantAmount: formData.grantAmount,
+      deliverables: deliverables,
+    };
+
+    addMilestone(id || '', newMilestone);
+    toast.success('Milestone added successfully!');
+    
+    // Reset form
+    setFormData({
+      title: '',
+      description: '',
+      dueDate: '',
+      status: 'Not Started',
+      grantAmount: '',
+      deliverable: '',
+    });
+    setDeliverables([]);
+    setIsDialogOpen(false);
+  };
 
   if (!project) {
     return (
@@ -386,11 +454,19 @@ export function ProjectDetails() {
         {/* Grant Milestones Tab */}
         <TabsContent value="milestones" className="space-y-4">
           <Card>
-            <CardHeader>
+            <CardHeader className="flex flex-row items-center justify-between">
               <CardTitle className="flex items-center gap-2">
                 <Milestone className="w-5 h-5" />
                 Grant Milestones
               </CardTitle>
+              <Button
+                onClick={() => setIsDialogOpen(true)}
+                className="bg-blue-500 text-white hover:bg-blue-600"
+                size="sm"
+              >
+                <Plus className="w-4 h-4 mr-2" />
+                Add Milestone
+              </Button>
             </CardHeader>
             <CardContent>
               {project.grantMilestones.length > 0 ? (
@@ -442,6 +518,138 @@ export function ProjectDetails() {
           </Card>
         </TabsContent>
       </Tabs>
+
+      {/* Add Milestone Dialog */}
+      <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+        <DialogContent className="sm:max-w-[500px] max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>Add Grant Milestone</DialogTitle>
+            <DialogDescription>
+              Add a new milestone to track project deliverables and grant funding.
+            </DialogDescription>
+          </DialogHeader>
+          <form onSubmit={handleSubmit}>
+            <div className="grid gap-4 py-4">
+              <div className="space-y-2">
+                <Label htmlFor="title">Title *</Label>
+                <Input
+                  id="title"
+                  placeholder="e.g., Phase 1 Completion"
+                  value={formData.title}
+                  onChange={(e) => handleInputChange('title', e.target.value)}
+                  required
+                />
+              </div>
+              
+              <div className="space-y-2">
+                <Label htmlFor="description">Description *</Label>
+                <Textarea
+                  id="description"
+                  placeholder="Describe the milestone objectives and requirements"
+                  value={formData.description}
+                  onChange={(e) => handleInputChange('description', e.target.value)}
+                  required
+                  rows={3}
+                />
+              </div>
+              
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label htmlFor="dueDate">Due Date *</Label>
+                  <Input
+                    id="dueDate"
+                    type="date"
+                    value={formData.dueDate}
+                    onChange={(e) => handleInputChange('dueDate', e.target.value)}
+                    required
+                  />
+                </div>
+                
+                <div className="space-y-2">
+                  <Label htmlFor="status">Status</Label>
+                  <Select
+                    value={formData.status}
+                    onValueChange={(value) => handleInputChange('status', value)}
+                  >
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="Not Started">Not Started</SelectItem>
+                      <SelectItem value="In Progress">In Progress</SelectItem>
+                      <SelectItem value="Completed">Completed</SelectItem>
+                      <SelectItem value="Overdue">Overdue</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+              
+              <div className="space-y-2">
+                <Label htmlFor="grantAmount">Grant Amount *</Label>
+                <Input
+                  id="grantAmount"
+                  placeholder="e.g., $500,000"
+                  value={formData.grantAmount}
+                  onChange={(e) => handleInputChange('grantAmount', e.target.value)}
+                  required
+                />
+              </div>
+              
+              <div className="space-y-2">
+                <Label htmlFor="deliverable">Deliverables</Label>
+                <div className="flex gap-2">
+                  <Input
+                    id="deliverable"
+                    placeholder="Add a deliverable"
+                    value={formData.deliverable}
+                    onChange={(e) => handleInputChange('deliverable', e.target.value)}
+                    onKeyPress={(e) => {
+                      if (e.key === 'Enter') {
+                        e.preventDefault();
+                        addDeliverable();
+                      }
+                    }}
+                  />
+                  <Button
+                    type="button"
+                    onClick={addDeliverable}
+                    variant="outline"
+                    size="sm"
+                  >
+                    <Plus className="w-4 h-4" />
+                  </Button>
+                </div>
+                {deliverables.length > 0 && (
+                  <div className="mt-2 space-y-2">
+                    {deliverables.map((deliverable, index) => (
+                      <div key={index} className="flex items-center justify-between p-2 bg-gray-50 rounded text-sm">
+                        <span>{deliverable}</span>
+                        <Button
+                          type="button"
+                          onClick={() => removeDeliverable(index)}
+                          variant="ghost"
+                          size="sm"
+                        >
+                          <X className="w-4 h-4" />
+                        </Button>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </div>
+            
+            <DialogFooter>
+              <Button type="button" variant="outline" onClick={() => setIsDialogOpen(false)}>
+                Cancel
+              </Button>
+              <Button type="submit" className="bg-blue-500 hover:bg-blue-600">
+                Add Milestone
+              </Button>
+            </DialogFooter>
+          </form>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

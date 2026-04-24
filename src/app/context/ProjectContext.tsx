@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, ReactNode } from 'react';
-import { Project } from '../types/project';
+import { Project, GrantMilestone } from '../types/project';
 
 interface ProjectContextType {
   projects: Project[];
@@ -7,6 +7,7 @@ interface ProjectContextType {
   updateProject: (id: string, project: Partial<Project>) => void;
   deleteProject: (id: string) => void;
   getProject: (id: string) => Project | undefined;
+  addMilestone: (projectId: string, milestone: GrantMilestone) => void;
 }
 
 const ProjectContext = createContext<ProjectContextType | undefined>(undefined);
@@ -201,8 +202,12 @@ export function ProjectProvider({ children }: { children: ReactNode }) {
     return projects.find(p => p.id === id);
   };
 
+  const addMilestone = (projectId: string, milestone: GrantMilestone) => {
+    setProjects(projects.map(p => p.id === projectId ? { ...p, grantMilestones: [...p.grantMilestones, milestone] } : p));
+  };
+
   return (
-    <ProjectContext.Provider value={{ projects, addProject, updateProject, deleteProject, getProject }}>
+    <ProjectContext.Provider value={{ projects, addProject, updateProject, deleteProject, getProject, addMilestone }}>
       {children}
     </ProjectContext.Provider>
   );

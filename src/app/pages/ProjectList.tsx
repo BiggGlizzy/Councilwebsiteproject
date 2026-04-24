@@ -1,11 +1,12 @@
 import { useState } from 'react';
 import { useProjects } from '../context/ProjectContext';
-import { Link } from 'react-router';
+import { Link, useNavigate } from 'react-router';
 import { Card, CardContent } from '../components/ui/card';
 import { Badge } from '../components/ui/badge';
 import { Input } from '../components/ui/input';
+import { Button } from '../components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../components/ui/select';
-import { Search, Calendar, User, Building2 } from 'lucide-react';
+import { Search, Calendar, User, Building2, Plus } from 'lucide-react';
 
 export function ProjectList() {
   const { projects } = useProjects();
@@ -54,6 +55,8 @@ export function ProjectList() {
         return 'bg-gray-100 text-gray-800';
     }
   };
+
+  const navigate = useNavigate();
 
   return (
     <div className="space-y-6">
@@ -111,6 +114,13 @@ export function ProjectList() {
         <p className="text-sm text-gray-600">
           Showing {filteredProjects.length} of {projects.length} projects
         </p>
+        <Button
+          onClick={() => navigate('/projects/new')}
+          className="bg-blue-500 text-white hover:bg-blue-600"
+        >
+          <Plus className="w-4 h-4 mr-2" />
+          Add New Project
+        </Button>
       </div>
 
       {/* Project Cards */}
