@@ -4,7 +4,7 @@ interface User {
   id: string;
   name: string;
   email: string;
-  role: string;
+  role: 'Admin' | 'Project Manager' | 'Staff Member';
 }
 
 interface AuthContextType {
@@ -17,9 +17,10 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 // Mock users for demo
-const mockUsers = [
-  { id: '1', email: 'admin@council.gov', password: 'admin123', name: 'Admin User', role: 'Administrator' },
-  { id: '2', email: 'manager@council.gov', password: 'manager123', name: 'Project Manager', role: 'Manager' },
+const mockUsers: Array<{ id: string; email: string; password: string; name: string; role: 'Admin' | 'Project Manager' | 'Staff Member' }> = [
+  { id: '1', email: 'admin@council.gov', password: 'admin123', name: 'Admin User', role: 'Admin' },
+  { id: '2', email: 'manager@council.gov', password: 'manager123', name: 'Sarah Johnson', role: 'Project Manager' },
+  { id: '3', email: 'staff@council.gov', password: 'staff123', name: 'Staff Member', role: 'Staff Member' },
 ];
 
 export function AuthProvider({ children }: { children: ReactNode }) {

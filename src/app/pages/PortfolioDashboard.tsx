@@ -74,32 +74,32 @@ export function PortfolioDashboard() {
       value: `$${(totalBudget / 1000000).toFixed(1)}M`,
       subtitle: `Across ${totalProjects} projects`,
       icon: DollarSign,
-      color: 'text-green-600',
-      bgColor: 'bg-green-50'
+      color: '#50B66D',
+      bgColor: 'var(--council-green-light)'
     },
     {
       title: 'Active Projects',
       value: activeProjects,
       subtitle: `${completedProjects} completed`,
       icon: Briefcase,
-      color: 'text-blue-600',
-      bgColor: 'bg-blue-50'
+      color: '#006FB9',
+      bgColor: 'var(--council-blue-light)'
     },
     {
       title: 'Critical Risks',
       value: criticalRisks,
       subtitle: `${totalRisks} total risks`,
       icon: AlertTriangle,
-      color: 'text-red-600',
-      bgColor: 'bg-red-50'
+      color: '#F4721E',
+      bgColor: 'var(--council-orange-light)'
     },
     {
       title: 'Benefits Achieved',
       value: `${achievedBenefits}/${totalBenefits}`,
       subtitle: `${totalBenefits > 0 ? Math.round((achievedBenefits / totalBenefits) * 100) : 0}% complete`,
       icon: Target,
-      color: 'text-purple-600',
-      bgColor: 'bg-purple-50'
+      color: '#7A298F',
+      bgColor: 'var(--council-purple-light)'
     }
   ];
 
@@ -154,8 +154,8 @@ export function PortfolioDashboard() {
                     <p className="text-3xl font-bold text-gray-900 mt-2">{stat.value}</p>
                     <p className="text-sm text-gray-500 mt-1">{stat.subtitle}</p>
                   </div>
-                  <div className={`p-3 rounded-lg ${stat.bgColor}`}>
-                    <Icon className={`w-6 h-6 ${stat.color}`} />
+                  <div className="p-3 rounded-lg" style={{ backgroundColor: stat.bgColor }}>
+                    <Icon className="w-6 h-6" style={{ color: stat.color }} />
                   </div>
                 </div>
               </CardContent>
@@ -167,10 +167,10 @@ export function PortfolioDashboard() {
       {/* Portfolio Health & Progress */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Project Status Distribution */}
-        <Card>
+        <Card style={{ backgroundColor: 'var(--council-green-light)' }}>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
-              <PieChart className="w-5 h-5" />
+              <PieChart className="w-5 h-5" style={{ color: 'var(--council-green)' }} />
               Project Status Distribution
             </CardTitle>
           </CardHeader>
@@ -211,10 +211,10 @@ export function PortfolioDashboard() {
         </Card>
 
         {/* Milestone Progress */}
-        <Card>
+        <Card style={{ backgroundColor: 'var(--council-blue-light)' }} className="border-[var(--council-blue)]">
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
-              <Clock className="w-5 h-5" />
+              <Clock className="w-5 h-5" style={{ color: 'var(--council-blue)' }} />
               Grant Milestones
             </CardTitle>
           </CardHeader>
@@ -222,17 +222,17 @@ export function PortfolioDashboard() {
             <div className="space-y-4">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
-                  <CheckCircle2 className="w-5 h-5 text-green-600" />
+                  <CheckCircle2 className="w-5 h-5" style={{ color: 'var(--council-green)' }} />
                   <span className="text-sm font-medium">Completed</span>
                 </div>
-                <span className="text-2xl font-bold text-green-600">{completedMilestones}</span>
+                <span className="text-2xl font-bold" style={{ color: 'var(--council-green)' }}>{completedMilestones}</span>
               </div>
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
-                  <Activity className="w-5 h-5 text-blue-600" />
+                  <Activity className="w-5 h-5" style={{ color: 'var(--council-blue)' }} />
                   <span className="text-sm font-medium">In Progress</span>
                 </div>
-                <span className="text-2xl font-bold text-blue-600">
+                <span className="text-2xl font-bold" style={{ color: 'var(--council-blue)' }}>
                   {totalMilestones - completedMilestones - overdueMilestones}
                 </span>
               </div>
@@ -247,9 +247,12 @@ export function PortfolioDashboard() {
               )}
               <div className="pt-4 border-t">
                 <div className="w-full bg-gray-200 rounded-full h-2">
-                  <div 
-                    className="bg-green-600 h-2 rounded-full transition-all"
-                    style={{ width: `${totalMilestones > 0 ? (completedMilestones / totalMilestones) * 100 : 0}%` }}
+                  <div
+                    className="h-2 rounded-full transition-all"
+                    style={{
+                      width: `${totalMilestones > 0 ? (completedMilestones / totalMilestones) * 100 : 0}%`,
+                      backgroundColor: 'var(--council-blue)'
+                    }}
                   />
                 </div>
                 <p className="text-sm text-gray-600 mt-2">
@@ -264,7 +267,7 @@ export function PortfolioDashboard() {
       {/* Department & Priority Breakdown */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Department Distribution */}
-        <Card>
+        <Card style={{ backgroundColor: 'var(--council-purple-light)' }} className="border-[var(--council-purple)]">
           <CardHeader>
             <CardTitle>Projects by Department</CardTitle>
           </CardHeader>
@@ -281,7 +284,7 @@ export function PortfolioDashboard() {
         </Card>
 
         {/* Priority Distribution */}
-        <Card>
+        <Card style={{ backgroundColor: 'var(--council-orange-light)' }} className="border-[var(--council-orange)]">
           <CardHeader>
             <CardTitle>Projects by Priority</CardTitle>
           </CardHeader>
@@ -306,7 +309,7 @@ export function PortfolioDashboard() {
       </div>
 
       {/* Critical Attention Items */}
-      <Card>
+      <Card style={{ backgroundColor: '#FEF2F2' }} className="border-red-200">
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <AlertTriangle className="w-5 h-5 text-red-600" />
@@ -355,10 +358,10 @@ export function PortfolioDashboard() {
               </div>
             )}
             {criticalRisks === 0 && criticalIssues === 0 && onHoldProjects === 0 && (
-              <div className="p-4 bg-green-50 border border-green-200 rounded-lg">
+              <div className="p-4 border rounded-lg" style={{ backgroundColor: 'var(--council-green-light)', borderColor: 'var(--council-green)' }}>
                 <div className="flex items-center gap-3">
-                  <CheckCircle2 className="w-5 h-5 text-green-600" />
-                  <p className="text-green-900 font-medium">No critical items requiring immediate attention</p>
+                  <CheckCircle2 className="w-5 h-5" style={{ color: 'var(--council-green)' }} />
+                  <p className="font-medium" style={{ color: 'var(--council-green)' }}>No critical items requiring immediate attention</p>
                 </div>
               </div>
             )}

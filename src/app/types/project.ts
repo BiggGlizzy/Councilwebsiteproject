@@ -61,6 +61,7 @@ export interface Project {
   description: string;
   status: 'Planning' | 'Active' | 'On Hold' | 'Completed' | 'Cancelled';
   priority: 'Low' | 'Medium' | 'High' | 'Critical';
+  phase: 'Initiation' | 'Planning' | 'Execution' | 'Monitoring' | 'Closure';
   startDate: string;
   endDate: string;
   budget: string;

@@ -6,6 +6,9 @@ import { CreateProject } from './pages/CreateProject';
 import { ProjectDetails } from './pages/ProjectDetails';
 import { Login } from './pages/Login';
 import { PortfolioDashboard } from './pages/PortfolioDashboard';
+import { AuditLogs } from './pages/AuditLogs';
+import { Notifications } from './pages/Notifications';
+import { PublicUpdates } from './pages/PublicUpdates';
 import { ProtectedRoute } from './components/ProtectedRoute';
 
 export const router = createBrowserRouter([
@@ -26,6 +29,9 @@ export const router = createBrowserRouter([
       { path: 'projects', Component: ProjectList },
       { path: 'projects/new', Component: CreateProject },
       { path: 'projects/:id', Component: ProjectDetails },
+      { path: 'audit-logs', Component: AuditLogs },
+      { path: 'notifications', Component: Notifications },
+      { path: 'public-updates', Component: PublicUpdates },
     ],
   },
   {

@@ -67,7 +67,7 @@ export function ProjectList() {
       </div>
 
       {/* Filters */}
-      <Card>
+      <Card style={{ backgroundColor: 'var(--council-green-light)' }}>
         <CardContent className="pt-6">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div className="relative">
@@ -116,7 +116,8 @@ export function ProjectList() {
         </p>
         <Button
           onClick={() => navigate('/projects/new')}
-          className="bg-blue-500 text-white hover:bg-blue-600"
+          className="text-white hover:opacity-90"
+          style={{ backgroundColor: 'var(--council-blue)' }}
         >
           <Plus className="w-4 h-4 mr-2" />
           Add New Project
@@ -168,7 +169,7 @@ export function ProjectList() {
                     <div className="flex items-center gap-6 mt-4 pt-4 border-t border-gray-200">
                       <div className="text-sm">
                         <span className="text-gray-600">Risks: </span>
-                        <span className="font-semibold text-orange-600">{project.risks.length}</span>
+                        <span className="font-semibold" style={{ color: 'var(--council-orange)' }}>{project.risks.length}</span>
                       </div>
                       <div className="text-sm">
                         <span className="text-gray-600">Issues: </span>
@@ -176,11 +177,11 @@ export function ProjectList() {
                       </div>
                       <div className="text-sm">
                         <span className="text-gray-600">Benefits: </span>
-                        <span className="font-semibold text-green-600">{project.benefits.length}</span>
+                        <span className="font-semibold" style={{ color: 'var(--council-green)' }}>{project.benefits.length}</span>
                       </div>
                       <div className="text-sm">
                         <span className="text-gray-600">Milestones: </span>
-                        <span className="font-semibold text-blue-600">{project.grantMilestones.length}</span>
+                        <span className="font-semibold" style={{ color: 'var(--council-blue)' }}>{project.grantMilestones.length}</span>
                       </div>
                     </div>
                   </div>

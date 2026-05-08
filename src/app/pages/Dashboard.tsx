@@ -34,32 +34,32 @@ export function Dashboard() {
       value: totalProjects,
       subtitle: `${activeProjects} active, ${completedProjects} completed`,
       icon: FolderOpen,
-      color: 'text-blue-600',
-      bgColor: 'bg-blue-50'
+      color: '#006FB9',
+      bgColor: 'var(--council-blue-light)'
     },
     {
       title: 'Open Risks',
       value: openRisks,
       subtitle: `${totalRisks} total risks tracked`,
       icon: AlertTriangle,
-      color: 'text-orange-600',
-      bgColor: 'bg-orange-50'
+      color: '#F4721E',
+      bgColor: 'var(--council-orange-light)'
     },
     {
       title: 'Open Issues',
       value: openIssues,
       subtitle: `${totalIssues} total issues logged`,
       icon: AlertCircle,
-      color: 'text-red-600',
-      bgColor: 'bg-red-50'
+      color: '#DC2626',
+      bgColor: '#FEF2F2'
     },
     {
       title: 'Benefits Tracking',
       value: `${achievedBenefits}/${totalBenefits}`,
       subtitle: 'Benefits achieved',
       icon: Target,
-      color: 'text-green-600',
-      bgColor: 'bg-green-50'
+      color: '#50B66D',
+      bgColor: 'var(--council-green-light)'
     }
   ];
 
@@ -116,8 +116,8 @@ export function Dashboard() {
                     <p className="text-3xl font-bold text-gray-900 mt-2">{stat.value}</p>
                     <p className="text-sm text-gray-500 mt-1">{stat.subtitle}</p>
                   </div>
-                  <div className={`p-3 rounded-lg ${stat.bgColor}`}>
-                    <Icon className={`w-6 h-6 ${stat.color}`} />
+                  <div className="p-3 rounded-lg" style={{ backgroundColor: stat.bgColor }}>
+                    <Icon className="w-6 h-6" style={{ color: stat.color }} />
                   </div>
                 </div>
               </CardContent>
@@ -128,10 +128,10 @@ export function Dashboard() {
 
       {/* Additional Stats */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <Card>
+        <Card style={{ backgroundColor: 'var(--council-blue-light)' }} className="border-[var(--council-blue)]">
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
-              <Clock className="w-5 h-5" />
+              <Clock className="w-5 h-5" style={{ color: 'var(--council-blue)' }} />
               Grant Milestones
             </CardTitle>
           </CardHeader>
@@ -147,9 +147,12 @@ export function Dashboard() {
               </div>
               <div className="mt-4 pt-4 border-t">
                 <div className="w-full bg-gray-200 rounded-full h-2">
-                  <div 
-                    className="bg-blue-600 h-2 rounded-full transition-all"
-                    style={{ width: `${totalMilestones > 0 ? (completedMilestones / totalMilestones) * 100 : 0}%` }}
+                  <div
+                    className="h-2 rounded-full transition-all"
+                    style={{
+                      width: `${totalMilestones > 0 ? (completedMilestones / totalMilestones) * 100 : 0}%`,
+                      backgroundColor: 'var(--council-blue)'
+                    }}
                   />
                 </div>
                 <p className="text-sm text-gray-600 mt-2">
@@ -160,10 +163,10 @@ export function Dashboard() {
           </CardContent>
         </Card>
 
-        <Card>
+        <Card style={{ backgroundColor: 'var(--council-green-light)' }}>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
-              <TrendingUp className="w-5 h-5" />
+              <TrendingUp className="w-5 h-5" style={{ color: 'var(--council-green)' }} />
               Project Status Breakdown
             </CardTitle>
           </CardHeader>
@@ -184,7 +187,7 @@ export function Dashboard() {
       </div>
 
       {/* Recent Projects */}
-      <Card>
+      <Card style={{ backgroundColor: 'var(--council-purple-light)' }} className="border-[var(--council-purple)]">
         <CardHeader>
           <CardTitle className="flex items-center justify-between">
             <span>Active Projects</span>

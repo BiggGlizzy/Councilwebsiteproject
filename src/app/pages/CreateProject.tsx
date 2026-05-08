@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router';
 import { useProjects } from '../context/ProjectContext';
+import { useAudit } from '../context/AuditContext';
 import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
@@ -14,12 +15,14 @@ import { toast } from 'sonner';
 export function CreateProject() {
   const navigate = useNavigate();
   const { addProject } = useProjects();
+  const { addAuditLog } = useAudit();
   
   const [formData, setFormData] = useState({
     name: '',
     description: '',
     status: 'Planning',
     priority: 'Medium',
+    phase: 'Initiation',
     startDate: '',
     endDate: '',
     budget: '',
@@ -47,6 +50,16 @@ export function CreateProject() {
     };
 
     addProject(newProject);
+
+    // Log the action
+    addAuditLog({
+      action: 'Created',
+      entityType: 'Project',
+      entityId: newProject.id,
+      entityName: newProject.name,
+      description: `Created new project: ${newProject.name}`,
+    });
+
     toast.success('Project created successfully!');
     navigate('/projects');
   };
@@ -71,7 +84,7 @@ export function CreateProject() {
       </div>
 
       <form onSubmit={handleSubmit}>
-        <Card>
+        <Card style={{ backgroundColor: 'var(--council-purple-light)' }} className="border-[var(--council-purple)]">
           <CardHeader>
             <CardTitle>Project Information</CardTitle>
           </CardHeader>
@@ -101,8 +114,8 @@ export function CreateProject() {
               />
             </div>
 
-            {/* Status and Priority */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {/* Status, Priority, and Phase */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div className="space-y-2">
                 <Label htmlFor="status">Status *</Label>
                 <Select value={formData.status} onValueChange={(value) => handleChange('status', value)}>
@@ -130,6 +143,22 @@ export function CreateProject() {
                     <SelectItem value="Medium">Medium</SelectItem>
                     <SelectItem value="High">High</SelectItem>
                     <SelectItem value="Critical">Critical</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="phase">Project Phase *</Label>
+                <Select value={formData.phase} onValueChange={(value) => handleChange('phase', value)}>
+                  <SelectTrigger id="phase">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="Initiation">Initiation</SelectItem>
+                    <SelectItem value="Planning">Planning</SelectItem>
+                    <SelectItem value="Execution">Execution</SelectItem>
+                    <SelectItem value="Monitoring">Monitoring</SelectItem>
+                    <SelectItem value="Closure">Closure</SelectItem>
                   </SelectContent>
                 </Select>
               </div>

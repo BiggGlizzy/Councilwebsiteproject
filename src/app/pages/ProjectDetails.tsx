@@ -1,6 +1,7 @@
 import { useParams, Link } from 'react-router';
 import { useState } from 'react';
 import { useProjects } from '../context/ProjectContext';
+import { useAudit } from '../context/AuditContext';
 import { Badge } from '../components/ui/badge';
 import { Button } from '../components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
@@ -12,10 +13,10 @@ import { Textarea } from '../components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../components/ui/select';
 import { toast } from 'sonner';
 import { 
-  ArrowLeft, 
-  Calendar, 
-  User, 
-  Building2, 
+  ArrowLeft,
+  Calendar,
+  User,
+  Building2,
   DollarSign,
   AlertTriangle,
   AlertCircle,
@@ -23,12 +24,14 @@ import {
   Target,
   Milestone,
   Plus,
-  X
+  X,
+  Layers
 } from 'lucide-react';
 
 export function ProjectDetails() {
   const { id } = useParams();
   const { getProject, addMilestone } = useProjects();
+  const { addAuditLog, addNotification } = useAudit();
   const project = getProject(id || '');
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [formData, setFormData] = useState({
@@ -75,8 +78,34 @@ export function ProjectDetails() {
     };
 
     addMilestone(id || '', newMilestone);
+
+    // Log the action
+    addAuditLog({
+      action: 'Created',
+      entityType: 'Milestone',
+      entityId: newMilestone.id,
+      entityName: newMilestone.title,
+      description: `Added grant milestone "${newMilestone.title}" to ${project?.name}`,
+    });
+
+    // Create notification for deadline
+    const dueDate = new Date(newMilestone.dueDate);
+    const daysUntilDue = Math.ceil((dueDate.getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24));
+
+    if (daysUntilDue > 0 && daysUntilDue <= 30) {
+      addNotification({
+        userId: '2', // Project manager
+        type: 'Deadline',
+        title: 'New Milestone Created',
+        message: `Milestone "${newMilestone.title}" is due in ${daysUntilDue} days`,
+        projectId: id,
+        projectName: project?.name,
+        actionUrl: `/projects/${id}`,
+      });
+    }
+
     toast.success('Milestone added successfully!');
-    
+
     // Reset form
     setFormData({
       title: '',
@@ -154,6 +183,50 @@ export function ProjectDetails() {
     }
   };
 
+  const phases: Array<'Initiation' | 'Planning' | 'Execution' | 'Monitoring' | 'Closure'> = [
+    'Initiation',
+    'Planning',
+    'Execution',
+    'Monitoring',
+    'Closure'
+  ];
+
+  const currentPhaseIndex = phases.indexOf(project.phase);
+
+  const getPhaseColor = (phase: string) => {
+    switch (phase) {
+      case 'Initiation':
+        return 'text-white';
+      case 'Planning':
+        return 'text-white';
+      case 'Execution':
+        return 'text-white';
+      case 'Monitoring':
+        return 'text-white';
+      case 'Closure':
+        return 'text-white';
+      default:
+        return 'bg-gray-100 text-gray-800';
+    }
+  };
+
+  const getPhaseBackgroundColor = (phase: string) => {
+    switch (phase) {
+      case 'Initiation':
+        return '#7A298F';
+      case 'Planning':
+        return '#006FB9';
+      case 'Execution':
+        return '#F4721E';
+      case 'Monitoring':
+        return '#50B66D';
+      case 'Closure':
+        return '#50B66D';
+      default:
+        return '#9CA3AF';
+    }
+  };
+
   return (
     <div className="space-y-6">
       {/* Page Header */}
@@ -177,8 +250,59 @@ export function ProjectDetails() {
         </div>
       </div>
 
+      {/* Project Phase Indicator */}
+      <Card style={{ backgroundColor: 'var(--council-blue-light)' }} className="border-[var(--council-blue)]">
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Layers className="w-5 h-5" style={{ color: 'var(--council-blue)' }} />
+            <span>Project Phase</span>
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="space-y-4">
+            {/* Current Phase Badge */}
+            <div className="flex items-center gap-3">
+              <Badge
+                className={`${getPhaseColor(project.phase)} text-lg px-4 py-2`}
+                style={{ backgroundColor: getPhaseBackgroundColor(project.phase) }}
+              >
+                {project.phase}
+              </Badge>
+              <span className="text-gray-600">Current Phase</span>
+            </div>
+
+            {/* Phase Progress Visualization */}
+            <div className="flex items-center gap-2">
+              {phases.map((phase, index) => (
+                <div key={phase} className="flex-1 flex flex-col items-center gap-2">
+                  <div
+                    className={`w-full h-2 rounded-full transition-all ${
+                      index <= currentPhaseIndex
+                        ? 'bg-gradient-to-r from-[var(--council-blue)] to-[var(--council-purple)]'
+                        : 'bg-gray-200'
+                    }`}
+                  />
+                  <span
+                    className={`text-xs text-center ${
+                      index === currentPhaseIndex
+                        ? 'font-semibold'
+                        : index < currentPhaseIndex
+                          ? 'text-gray-600'
+                          : 'text-gray-400'
+                    }`}
+                    style={index === currentPhaseIndex ? { color: 'var(--council-blue)' } : {}}
+                  >
+                    {phase}
+                  </span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
       {/* Project Overview Card */}
-      <Card>
+      <Card style={{ backgroundColor: 'var(--council-green-light)' }}>
         <CardHeader>
           <CardTitle>Project Overview</CardTitle>
         </CardHeader>
@@ -216,7 +340,7 @@ export function ProjectDetails() {
               <AlertTriangle className="w-5 h-5 text-gray-400 mt-1" />
               <div>
                 <p className="text-sm text-gray-600">Active Risks</p>
-                <p className="font-semibold text-orange-600">{project.risks.filter(r => r.status === 'Open').length} / {project.risks.length}</p>
+                <p className="font-semibold" style={{ color: 'var(--council-orange)' }}>{project.risks.filter(r => r.status === 'Open').length} / {project.risks.length}</p>
               </div>
             </div>
             <div className="flex items-start gap-3">
@@ -242,10 +366,10 @@ export function ProjectDetails() {
 
         {/* Risks Tab */}
         <TabsContent value="risks" className="space-y-4">
-          <Card>
+          <Card style={{ backgroundColor: 'var(--council-orange-light)' }} className="border-[var(--council-orange)]">
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
-                <AlertTriangle className="w-5 h-5" />
+                <AlertTriangle className="w-5 h-5" style={{ color: 'var(--council-orange)' }} />
                 Project Risks
               </CardTitle>
             </CardHeader>
@@ -301,10 +425,10 @@ export function ProjectDetails() {
 
         {/* Issues Tab */}
         <TabsContent value="issues" className="space-y-4">
-          <Card>
+          <Card style={{ backgroundColor: '#FEF2F2' }} className="border-red-200">
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
-                <AlertCircle className="w-5 h-5" />
+                <AlertCircle className="w-5 h-5 text-red-600" />
                 Project Issues
               </CardTitle>
             </CardHeader>
@@ -353,10 +477,10 @@ export function ProjectDetails() {
 
         {/* Scope Changes Tab */}
         <TabsContent value="scope" className="space-y-4">
-          <Card>
+          <Card style={{ backgroundColor: 'var(--council-purple-light)' }} className="border-[var(--council-purple)]">
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
-                <FileText className="w-5 h-5" />
+                <FileText className="w-5 h-5" style={{ color: 'var(--council-purple)' }} />
                 Scope Changes
               </CardTitle>
             </CardHeader>
@@ -404,10 +528,10 @@ export function ProjectDetails() {
 
         {/* Benefits Tab */}
         <TabsContent value="benefits" className="space-y-4">
-          <Card>
+          <Card style={{ backgroundColor: '#F0FDF4' }} className="border-green-200">
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
-                <Target className="w-5 h-5" />
+                <Target className="w-5 h-5" style={{ color: 'var(--council-green)' }} />
                 Project Benefits
               </CardTitle>
             </CardHeader>
@@ -425,13 +549,13 @@ export function ProjectDetails() {
                           </div>
                           <p className="text-sm mt-2">{benefit.description}</p>
                           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-3">
-                            <div className="p-3 bg-blue-50 rounded">
-                              <p className="text-sm font-medium text-blue-900">Target Value</p>
-                              <p className="text-sm text-blue-700 mt-1">{benefit.targetValue}</p>
+                            <div className="p-3 rounded" style={{ backgroundColor: 'var(--council-blue-light)' }}>
+                              <p className="text-sm font-medium" style={{ color: '#006FB9' }}>Target Value</p>
+                              <p className="text-sm mt-1" style={{ color: '#006FB9' }}>{benefit.targetValue}</p>
                             </div>
-                            <div className="p-3 bg-green-50 rounded">
-                              <p className="text-sm font-medium text-green-900">Current Value</p>
-                              <p className="text-sm text-green-700 mt-1">{benefit.currentValue}</p>
+                            <div className="p-3 rounded" style={{ backgroundColor: 'var(--council-green-light)' }}>
+                              <p className="text-sm font-medium" style={{ color: '#50B66D' }}>Current Value</p>
+                              <p className="text-sm mt-1" style={{ color: '#50B66D' }}>{benefit.currentValue}</p>
                             </div>
                           </div>
                           {benefit.measurementDate && (
@@ -453,15 +577,16 @@ export function ProjectDetails() {
 
         {/* Grant Milestones Tab */}
         <TabsContent value="milestones" className="space-y-4">
-          <Card>
+          <Card style={{ backgroundColor: 'var(--council-blue-light)' }} className="border-[var(--council-blue)]">
             <CardHeader className="flex flex-row items-center justify-between">
               <CardTitle className="flex items-center gap-2">
-                <Milestone className="w-5 h-5" />
+                <Milestone className="w-5 h-5" style={{ color: 'var(--council-blue)' }} />
                 Grant Milestones
               </CardTitle>
               <Button
                 onClick={() => setIsDialogOpen(true)}
-                className="bg-blue-500 text-white hover:bg-blue-600"
+                className="text-white hover:opacity-90"
+                style={{ backgroundColor: 'var(--council-blue)' }}
                 size="sm"
               >
                 <Plus className="w-4 h-4 mr-2" />
@@ -643,7 +768,7 @@ export function ProjectDetails() {
               <Button type="button" variant="outline" onClick={() => setIsDialogOpen(false)}>
                 Cancel
               </Button>
-              <Button type="submit" className="bg-blue-500 hover:bg-blue-600">
+              <Button type="submit" className="text-white hover:opacity-90" style={{ backgroundColor: 'var(--council-blue)' }}>
                 Add Milestone
               </Button>
             </DialogFooter>

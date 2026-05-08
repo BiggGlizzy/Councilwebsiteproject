@@ -5,8 +5,9 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../co
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
-import { Building2, Lock, Mail } from 'lucide-react';
+import { Lock, Mail } from 'lucide-react';
 import { toast } from 'sonner';
+import logoImage from '../../imports/Outlook-wehy2530_(2).jfif';
 
 export function Login() {
   const navigate = useNavigate();
@@ -42,14 +43,14 @@ export function Login() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-blue-50 flex items-center justify-center p-4">
+    <div className="min-h-screen flex items-center justify-center p-4" style={{ background: 'linear-gradient(to bottom right, var(--council-blue-light), white, var(--council-purple-light))' }}>
       <div className="w-full max-w-md">
         {/* Logo/Header */}
         <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-16 h-16 bg-blue-600 rounded-lg mb-4">
-            <Building2 className="w-8 h-8 text-white" />
+          <div className="inline-flex items-center justify-center mb-4">
+            <img src={logoImage} alt="Warren Shire Council" className="h-24" />
           </div>
-          <h1 className="text-3xl font-bold text-gray-900">Council Portal</h1>
+          <h1 className="text-3xl font-bold text-gray-900">Warren Shire Portal</h1>
           <p className="text-gray-600 mt-2">Project Management System</p>
         </div>
 
@@ -99,11 +100,12 @@ export function Login() {
             </form>
 
             {/* Demo Credentials */}
-            <div className="mt-6 p-4 bg-blue-50 rounded-lg border border-blue-200">
-              <p className="text-sm font-medium text-blue-900 mb-2">Demo Credentials:</p>
-              <div className="space-y-1 text-sm text-blue-700">
+            <div className="mt-6 p-4 rounded-lg border" style={{ backgroundColor: 'var(--council-blue-light)', borderColor: 'var(--council-blue)' }}>
+              <p className="text-sm font-medium mb-2" style={{ color: '#006FB9' }}>Demo Credentials:</p>
+              <div className="space-y-1 text-sm" style={{ color: '#006FB9' }}>
                 <p><strong>Admin:</strong> admin@council.gov / admin123</p>
-                <p><strong>Manager:</strong> manager@council.gov / manager123</p>
+                <p><strong>Project Manager:</strong> manager@council.gov / manager123</p>
+                <p><strong>Staff Member:</strong> staff@council.gov / staff123</p>
               </div>
             </div>
           </CardContent>
