@@ -104,13 +104,13 @@ export function ProjectDetailsFolders() {
   };
 
   const folders = [
-    { id: 'stages', name: 'Stages & Documentation', count: project.stages.length, color: 'var(--council-purple)', bgColor: 'var(--council-purple-light)' },
-    { id: 'approvals', name: 'Approvals', count: project.approvals.length, color: 'var(--council-blue)', bgColor: 'var(--council-blue-light)' },
-    { id: 'risks', name: 'Risks', count: project.risks.length, color: 'var(--council-orange)', bgColor: 'var(--council-orange-light)' },
-    { id: 'issues', name: 'Issues', count: project.issues.length, color: '#DC2626', bgColor: '#FEF2F2' },
-    { id: 'scope', name: 'Scope Changes', count: project.scopeChanges.length, color: 'var(--council-purple)', bgColor: 'var(--council-purple-light)' },
-    { id: 'benefits', name: 'Benefits', count: project.benefits.length, color: 'var(--council-green)', bgColor: 'var(--council-green-light)' },
-    { id: 'milestones', name: 'Grant Milestones', count: project.grantMilestones.length, color: 'var(--council-blue)', bgColor: 'var(--council-blue-light)' },
+    { id: 'stages', name: 'Stages & Documentation', count: project.stages?.length || 0, color: 'var(--council-purple)', bgColor: 'var(--council-purple-light)' },
+    { id: 'approvals', name: 'Approvals', count: project.approvals?.length || 0, color: 'var(--council-blue)', bgColor: 'var(--council-blue-light)' },
+    { id: 'risks', name: 'Risks', count: project.risks?.length || 0, color: 'var(--council-orange)', bgColor: 'var(--council-orange-light)' },
+    { id: 'issues', name: 'Issues', count: project.issues?.length || 0, color: '#DC2626', bgColor: '#FEF2F2' },
+    { id: 'scope', name: 'Scope Changes', count: project.scopeChanges?.length || 0, color: 'var(--council-purple)', bgColor: 'var(--council-purple-light)' },
+    { id: 'benefits', name: 'Benefits', count: project.benefits?.length || 0, color: 'var(--council-green)', bgColor: 'var(--council-green-light)' },
+    { id: 'milestones', name: 'Grant Milestones', count: project.grantMilestones?.length || 0, color: 'var(--council-blue)', bgColor: 'var(--council-blue-light)' },
   ];
 
   return (

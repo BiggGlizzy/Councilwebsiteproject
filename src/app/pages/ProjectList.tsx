@@ -169,19 +169,19 @@ export function ProjectList() {
                     <div className="flex items-center gap-6 mt-4 pt-4 border-t border-gray-200">
                       <div className="text-sm">
                         <span className="text-gray-600">Risks: </span>
-                        <span className="font-semibold" style={{ color: 'var(--council-orange)' }}>{project.risks.length}</span>
+                        <span className="font-semibold" style={{ color: 'var(--council-orange)' }}>{project.risks?.length || 0}</span>
                       </div>
                       <div className="text-sm">
                         <span className="text-gray-600">Issues: </span>
-                        <span className="font-semibold text-red-600">{project.issues.length}</span>
+                        <span className="font-semibold text-red-600">{project.issues?.length || 0}</span>
                       </div>
                       <div className="text-sm">
                         <span className="text-gray-600">Benefits: </span>
-                        <span className="font-semibold" style={{ color: 'var(--council-green)' }}>{project.benefits.length}</span>
+                        <span className="font-semibold" style={{ color: 'var(--council-green)' }}>{project.benefits?.length || 0}</span>
                       </div>
                       <div className="text-sm">
                         <span className="text-gray-600">Milestones: </span>
-                        <span className="font-semibold" style={{ color: 'var(--council-blue)' }}>{project.grantMilestones.length}</span>
+                        <span className="font-semibold" style={{ color: 'var(--council-blue)' }}>{project.grantMilestones?.length || 0}</span>
                       </div>
                     </div>
                   </div>

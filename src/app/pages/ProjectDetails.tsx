@@ -245,11 +245,10 @@ export function ProjectDetails() {
     }
   };
 
-  const phases: Array<'Initiation' | 'Planning' | 'Execution' | 'Monitoring' | 'Closure'> = [
+  const phases: Array<'Initiation' | 'Planning' | 'Delivery' | 'Closure'> = [
     'Initiation',
     'Planning',
-    'Execution',
-    'Monitoring',
+    'Delivery',
     'Closure'
   ];
 
@@ -261,9 +260,7 @@ export function ProjectDetails() {
         return 'text-white';
       case 'Planning':
         return 'text-white';
-      case 'Execution':
-        return 'text-white';
-      case 'Monitoring':
+      case 'Delivery':
         return 'text-white';
       case 'Closure':
         return 'text-white';
@@ -278,10 +275,8 @@ export function ProjectDetails() {
         return '#7A298F';
       case 'Planning':
         return '#006FB9';
-      case 'Execution':
+      case 'Delivery':
         return '#F4721E';
-      case 'Monitoring':
-        return '#50B66D';
       case 'Closure':
         return '#50B66D';
       default:
@@ -402,14 +397,14 @@ export function ProjectDetails() {
               <AlertTriangle className="w-5 h-5 text-gray-400 mt-1" />
               <div>
                 <p className="text-sm text-gray-600">Active Risks</p>
-                <p className="font-semibold" style={{ color: 'var(--council-orange)' }}>{project.risks.filter(r => r.status === 'Open').length} / {project.risks.length}</p>
+                <p className="font-semibold" style={{ color: 'var(--council-orange)' }}>{project.risks?.filter(r => r.status === 'Open').length} / {project.risks?.length || 0}</p>
               </div>
             </div>
             <div className="flex items-start gap-3">
               <AlertCircle className="w-5 h-5 text-gray-400 mt-1" />
               <div>
                 <p className="text-sm text-gray-600">Open Issues</p>
-                <p className="font-semibold text-red-600">{project.issues.filter(i => i.status === 'Open').length} / {project.issues.length}</p>
+                <p className="font-semibold text-red-600">{project.issues?.filter(i => i.status === 'Open').length} / {project.issues?.length || 0}</p>
               </div>
             </div>
           </div>
@@ -419,11 +414,11 @@ export function ProjectDetails() {
       {/* Detailed Tabs */}
       <Tabs defaultValue="risks" className="w-full">
         <TabsList className="grid w-full grid-cols-2 lg:grid-cols-5">
-          <TabsTrigger value="risks">Risks ({project.risks.length})</TabsTrigger>
-          <TabsTrigger value="issues">Issues ({project.issues.length})</TabsTrigger>
-          <TabsTrigger value="scope">Scope Changes ({project.scopeChanges.length})</TabsTrigger>
-          <TabsTrigger value="benefits">Benefits ({project.benefits.length})</TabsTrigger>
-          <TabsTrigger value="milestones">Milestones ({project.grantMilestones.length})</TabsTrigger>
+          <TabsTrigger value="risks">Risks ({project.risks?.length || 0})</TabsTrigger>
+          <TabsTrigger value="issues">Issues ({project.issues?.length || 0})</TabsTrigger>
+          <TabsTrigger value="scope">Scope Changes ({project.scopeChanges?.length || 0})</TabsTrigger>
+          <TabsTrigger value="benefits">Benefits ({project.benefits?.length || 0})</TabsTrigger>
+          <TabsTrigger value="milestones">Milestones ({project.grantMilestones?.length || 0})</TabsTrigger>
         </TabsList>
 
         {/* Risks Tab */}
@@ -436,9 +431,9 @@ export function ProjectDetails() {
               </CardTitle>
             </CardHeader>
             <CardContent>
-              {project.risks.length > 0 ? (
+              {project.risks?.length || 0 > 0 ? (
                 <div className="space-y-4">
-                  {project.risks.map(risk => (
+                  {project.risks?.map(risk => (
                     <div key={risk.id} className={`p-4 border rounded-lg ${getSeverityColor(risk.impact)}`}>
                       <div className="flex items-start justify-between gap-4">
                         <div className="flex-1">
@@ -495,9 +490,9 @@ export function ProjectDetails() {
               </CardTitle>
             </CardHeader>
             <CardContent>
-              {project.issues.length > 0 ? (
+              {project.issues?.length || 0 > 0 ? (
                 <div className="space-y-4">
-                  {project.issues.map(issue => (
+                  {project.issues?.map(issue => (
                     <div key={issue.id} className={`p-4 border rounded-lg ${getSeverityColor(issue.priority)}`}>
                       <div className="flex items-start justify-between gap-4">
                         <div className="flex-1">
@@ -547,9 +542,9 @@ export function ProjectDetails() {
               </CardTitle>
             </CardHeader>
             <CardContent>
-              {project.scopeChanges.length > 0 ? (
+              {project.scopeChanges?.length || 0 > 0 ? (
                 <div className="space-y-4">
-                  {project.scopeChanges.map(change => (
+                  {project.scopeChanges?.map(change => (
                     <div key={change.id} className="p-4 border border-gray-200 rounded-lg">
                       <div className="flex items-start justify-between gap-4">
                         <div className="flex-1">
@@ -598,9 +593,9 @@ export function ProjectDetails() {
               </CardTitle>
             </CardHeader>
             <CardContent>
-              {project.benefits.length > 0 ? (
+              {project.benefits?.length || 0 > 0 ? (
                 <div className="space-y-4">
-                  {project.benefits.map(benefit => (
+                  {project.benefits?.map(benefit => (
                     <div key={benefit.id} className="p-4 border border-gray-200 rounded-lg">
                       <div className="flex items-start justify-between gap-4">
                         <div className="flex-1">
@@ -656,9 +651,9 @@ export function ProjectDetails() {
               </Button>
             </CardHeader>
             <CardContent>
-              {project.grantMilestones.length > 0 ? (
+              {project.grantMilestones?.length || 0 > 0 ? (
                 <div className="space-y-4">
-                  {project.grantMilestones.map(milestone => (
+                  {project.grantMilestones?.map(milestone => (
                     <div key={milestone.id} className="p-4 border border-gray-200 rounded-lg">
                       <div className="flex items-start justify-between gap-4">
                         <div className="flex-1">

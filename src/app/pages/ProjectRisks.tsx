@@ -57,7 +57,7 @@ export function ProjectRisks() {
 
     if (editingRisk) {
       // Update existing risk
-      const updatedRisks = project.risks.map(r =>
+      const updatedRisks = project.risks?.map(r =>
         r.id === editingRisk.id ? { ...r, ...formData } : r
       );
       updateProject(id || '', { risks: updatedRisks });
@@ -192,13 +192,13 @@ export function ProjectRisks() {
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <AlertTriangle className="w-5 h-5" style={{ color: 'var(--council-orange)' }} />
-            All Risks ({project.risks.length})
+            All Risks ({project.risks?.length || 0})
           </CardTitle>
         </CardHeader>
         <CardContent>
-          {project.risks.length > 0 ? (
+          {project.risks?.length || 0 > 0 ? (
             <div className="space-y-4">
-              {project.risks.map(risk => (
+              {project.risks?.map(risk => (
                 <div key={risk.id} className={`p-4 border rounded-lg bg-white ${getSeverityColor(risk.impact)}`}>
                   <div className="flex items-start justify-between gap-4">
                     <div className="flex-1">
