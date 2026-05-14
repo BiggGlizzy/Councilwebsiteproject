@@ -4,6 +4,8 @@ import { Dashboard } from './pages/Dashboard';
 import { ProjectList } from './pages/ProjectList';
 import { CreateProject } from './pages/CreateProject';
 import { ProjectDetails } from './pages/ProjectDetails';
+import { ProjectDetailsFolders } from './pages/ProjectDetailsFolders';
+import { ProjectRisks } from './pages/ProjectRisks';
 import { Login } from './pages/Login';
 import { PortfolioDashboard } from './pages/PortfolioDashboard';
 import { AuditLogs } from './pages/AuditLogs';
@@ -28,7 +30,9 @@ export const router = createBrowserRouter([
       { path: 'portfolio', Component: PortfolioDashboard },
       { path: 'projects', Component: ProjectList },
       { path: 'projects/new', Component: CreateProject },
-      { path: 'projects/:id', Component: ProjectDetails },
+      { path: 'projects/:id', Component: ProjectDetailsFolders },
+      { path: 'projects/:id/details', Component: ProjectDetails },
+      { path: 'projects/:id/risks', Component: ProjectRisks },
       { path: 'audit-logs', Component: AuditLogs },
       { path: 'notifications', Component: Notifications },
       { path: 'public-updates', Component: PublicUpdates },

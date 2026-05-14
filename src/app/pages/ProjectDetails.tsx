@@ -33,8 +33,17 @@ export function ProjectDetails() {
   const { getProject, addMilestone } = useProjects();
   const { addAuditLog, addNotification } = useAudit();
   const project = getProject(id || '');
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [formData, setFormData] = useState({
+  const [isMilestoneDialogOpen, setIsMilestoneDialogOpen] = useState(false);
+  const [isRiskDialogOpen, setIsRiskDialogOpen] = useState(false);
+  const [isIssueDialogOpen, setIsIssueDialogOpen] = useState(false);
+  const [isScopeDialogOpen, setIsScopeDialogOpen] = useState(false);
+  const [isBenefitDialogOpen, setIsBenefitDialogOpen] = useState(false);
+  const [isApprovalDialogOpen, setIsApprovalDialogOpen] = useState(false);
+  const [selectedApproval, setSelectedApproval] = useState<typeof project.approvals[0] | null>(null);
+  const [approvalDecision, setApprovalDecision] = useState<'Approved' | 'Rejected'>('Approved');
+  const [approvalComments, setApprovalComments] = useState('');
+  const [editingItem, setEditingItem] = useState<any>(null);
+  const [milestoneFormData, setMilestoneFormData] = useState({
     title: '',
     description: '',
     dueDate: '',
@@ -44,14 +53,67 @@ export function ProjectDetails() {
   });
   const [deliverables, setDeliverables] = useState<string[]>([]);
 
-  const handleInputChange = (field: string, value: string) => {
-    setFormData(prev => ({ ...prev, [field]: value }));
+  const [riskFormData, setRiskFormData] = useState({
+    title: '',
+    description: '',
+    likelihood: 'Medium' as 'Low' | 'Medium' | 'High' | 'Critical',
+    impact: 'Medium' as 'Low' | 'Medium' | 'High' | 'Critical',
+    mitigation: '',
+    status: 'Open' as 'Open' | 'Mitigated' | 'Closed',
+    owner: '',
+  });
+
+  const [issueFormData, setIssueFormData] = useState({
+    title: '',
+    description: '',
+    priority: 'Medium' as 'Low' | 'Medium' | 'High' | 'Critical',
+    status: 'Open' as 'Open' | 'In Progress' | 'Resolved' | 'Closed',
+    assignedTo: '',
+  });
+
+  const [scopeFormData, setScopeFormData] = useState({
+    title: '',
+    description: '',
+    requestedBy: '',
+    status: 'Pending' as 'Pending' | 'Approved' | 'Rejected' | 'Implemented',
+    impact: '',
+    costImpact: '',
+    timelineImpact: '',
+  });
+
+  const [benefitFormData, setBenefitFormData] = useState({
+    title: '',
+    description: '',
+    category: 'Financial' as 'Financial' | 'Social' | 'Environmental' | 'Operational',
+    targetValue: '',
+    currentValue: '',
+    status: 'Not Started' as 'Not Started' | 'In Progress' | 'Achieved',
+  });
+
+  const handleMilestoneInputChange = (field: string, value: string) => {
+    setMilestoneFormData(prev => ({ ...prev, [field]: value }));
+  };
+
+  const handleRiskInputChange = (field: string, value: string) => {
+    setRiskFormData(prev => ({ ...prev, [field]: value }));
+  };
+
+  const handleIssueInputChange = (field: string, value: string) => {
+    setIssueFormData(prev => ({ ...prev, [field]: value }));
+  };
+
+  const handleScopeInputChange = (field: string, value: string) => {
+    setScopeFormData(prev => ({ ...prev, [field]: value }));
+  };
+
+  const handleBenefitInputChange = (field: string, value: string) => {
+    setBenefitFormData(prev => ({ ...prev, [field]: value }));
   };
 
   const addDeliverable = () => {
-    if (formData.deliverable.trim()) {
-      setDeliverables(prev => [...prev, formData.deliverable.trim()]);
-      setFormData(prev => ({ ...prev, deliverable: '' }));
+    if (milestoneFormData.deliverable.trim()) {
+      setDeliverables(prev => [...prev, milestoneFormData.deliverable.trim()]);
+      setMilestoneFormData(prev => ({ ...prev, deliverable: '' }));
     }
   };
 
@@ -59,21 +121,21 @@ export function ProjectDetails() {
     setDeliverables(prev => prev.filter((_, i) => i !== index));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleMilestoneSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    
-    if (!formData.title || !formData.description || !formData.dueDate || !formData.grantAmount) {
+
+    if (!milestoneFormData.title || !milestoneFormData.description || !milestoneFormData.dueDate || !milestoneFormData.grantAmount) {
       toast.error('Please fill in all required fields');
       return;
     }
 
     const newMilestone = {
       id: `gm-${Date.now()}`,
-      title: formData.title,
-      description: formData.description,
-      dueDate: formData.dueDate,
-      status: formData.status,
-      grantAmount: formData.grantAmount,
+      title: milestoneFormData.title,
+      description: milestoneFormData.description,
+      dueDate: milestoneFormData.dueDate,
+      status: milestoneFormData.status,
+      grantAmount: milestoneFormData.grantAmount,
       deliverables: deliverables,
     };
 
@@ -107,7 +169,7 @@ export function ProjectDetails() {
     toast.success('Milestone added successfully!');
 
     // Reset form
-    setFormData({
+    setMilestoneFormData({
       title: '',
       description: '',
       dueDate: '',
@@ -116,7 +178,7 @@ export function ProjectDetails() {
       deliverable: '',
     });
     setDeliverables([]);
-    setIsDialogOpen(false);
+    setIsMilestoneDialogOpen(false);
   };
 
   if (!project) {
@@ -584,7 +646,7 @@ export function ProjectDetails() {
                 Grant Milestones
               </CardTitle>
               <Button
-                onClick={() => setIsDialogOpen(true)}
+                onClick={() => setIsMilestoneDialogOpen(true)}
                 className="text-white hover:opacity-90"
                 style={{ backgroundColor: 'var(--council-blue)' }}
                 size="sm"
@@ -645,7 +707,7 @@ export function ProjectDetails() {
       </Tabs>
 
       {/* Add Milestone Dialog */}
-      <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+      <Dialog open={isMilestoneDialogOpen} onOpenChange={setIsMilestoneDialogOpen}>
         <DialogContent className="sm:max-w-[500px] max-h-[90vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle>Add Grant Milestone</DialogTitle>
@@ -765,7 +827,7 @@ export function ProjectDetails() {
             </div>
             
             <DialogFooter>
-              <Button type="button" variant="outline" onClick={() => setIsDialogOpen(false)}>
+              <Button type="button" variant="outline" onClick={() => setIsMilestoneDialogOpen(false)}>
                 Cancel
               </Button>
               <Button type="submit" className="text-white hover:opacity-90" style={{ backgroundColor: 'var(--council-blue)' }}>
