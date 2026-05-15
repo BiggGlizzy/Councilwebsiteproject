@@ -100,14 +100,7 @@ export function Login() {
             </form>
 
             {/* Demo Credentials */}
-            <div className="mt-6 p-4 rounded-lg border" style={{ backgroundColor: 'var(--council-blue-light)', borderColor: 'var(--council-blue)' }}>
-              <p className="text-sm font-medium mb-2" style={{ color: '#006FB9' }}>Demo Credentials:</p>
-              <div className="space-y-1 text-sm" style={{ color: '#006FB9' }}>
-                <p><strong>Admin:</strong> admin@council.gov / admin123</p>
-                <p><strong>Project Manager:</strong> manager@council.gov / manager123</p>
-                <p><strong>Staff Member:</strong> staff@council.gov / staff123</p>
-              </div>
-            </div>
+            
           </CardContent>
         </Card>
 
